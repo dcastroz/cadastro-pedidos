@@ -1,0 +1,43 @@
+
+services:
+
+  db:
+    image: postgres:16
+    container_name: cadastro-pedidos-db
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: pedidos_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pedidos_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: cadastro-pedidos-web
+
+    ports:
+      - "8501:8501"
+
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASS: senha123
+      DB_NAME: pedidos_db
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
