@@ -1,0 +1,63 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+        - name: web
+          image: cadastro-app:latest
+          imagePullPolicy: Never
+
+          env:
+            - name: DB_HOST
+              value: "db"
+
+            - name: DB_USER
+              value: "postgres"
+
+            - name: DB_PASS
+              value: "senha123"
+
+            - name: DB_NAME
+              value: "pedidos_db"
+
+          ports:
+            - containerPort: 8501
+
+          resources:
+            requests:
+              cpu: 100m
+
+            limits:
+              cpu: 200m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: web
+
+  ports:
+    - protocol: TCP
+      port: 8501
+      targetPort: 8501
