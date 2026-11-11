@@ -134,11 +134,7 @@ try:
             con=conn
         )
 
-    st.dataframe(
-        pedidos_df,
-        use_container_width=True,
-        hide_index=True
-    )
+    st.dataframe(pedidos_df, width="stretch")
 
 except Exception as e:
     st.error(f"Erro ao carregar pedidos: {e}")
